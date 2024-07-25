@@ -1,66 +1,81 @@
-const prompt = require("prompt-sync")();
+const prompt = require("prompt-sync");
 
-const atividades = [];
+const estados = [];
+
+const lerIndice = () => {
+  listarEstados();
+
+  if (estados.length > 0) {
+    const indice =
+      prompt("Digite o indice do estado que você deseja atualizar: ") - 1;
+
+    if (indice >= 0 && indice < estados.length) {
+      return indice;
+    } else {
+      console.log("Indice inválido");
+    }
+  }
+};
+
+const validarEstados= (estado) => estado.nome != "" && estado.sigla.length == 2;
 
 const modelo = () => {
-  let atividade = {
-    dia: undefined,
-    descricao: [],
-  };
+  const nome = prompt("Digite o nome do estado: ");
+  const sigla = prompt("Digite a sigla do estado: ").toUpperCase();
 
-  atividade.dia = prompt("Qual dia? ");
-
-  while (true) {
-    let resposta = prompt("O que fez nesse dia? ");
-
-    if (resposta == "acabou") break;
-
-    atividade.descricao.push(resposta);
+  if (validarEstados({ nome, sigla })) {
+    return { nome, sigla };
   }
 
-  return atividade;
+  console.log("Dados inválidos");
 };
 
-const criar = () => {
-  let atividade = modelo();
+const criarEstados= () => {
+  const estado = modelo();
 
-  atividades.push(atividade);
+  if (estado != undefined) {
+    estados.push({ nome, sigla });
 
-  console.log("Atividade criada");
+    console.log("Estadoscriado com sucesso");
+  }
 };
 
-const listar = () => {
-  atividades.forEach((atividade, indice) => {
-    console.log(`${indice + 1}. ${atividade.dia}: `);
-    atividade.descricao.forEach(descricao => console.log(`- ${descricao}`));
-  });
+const listarEstados= () => {
+  if (estados.length == 0) {
+    console.log("Nenhum estado está cadastrado");
+  } else {
+    estados.forEach((estado, indice) => {
+      console.log(indice + 1, estado);
+    });
+  }
 };
 
-const atualizar = () => {
-  listar();
+const atualizarEstados= () => {
+  const indice = lerIndice();
 
-  let indice = prompt("Qual indice deseja atualizar? ");
+  if (indice != undefined) {
+    const estado = modelo();
 
-  let atividade = modelo();
+    if (estado != undefined) {
+      estados[indice] = estado;
 
-  atividades[--indice] = atividade;
-
-  console.log("Atualizado");
+      console.log("Estadosatualizado com sucesso");
+    }
+  }
 };
 
-const remover = () => {
-  listar();
+const removerEstados= () => {
+  const indice = lerIndice();
+  if (indice != undefined) {
+    estados.splice(indice, 1);
 
-  let indice = prompt("Qual indice sera removido? ");
-
-  atividades.splice(--indice, 1);
-
-  console.log("Removido");
+    console.log("Estadosremovido com sucesso");
+  }
 };
 
 module.exports = {
-  criar,
-  atualizar,
-  remover,
-  listar,
-};
+    criarEstados,
+    listarEstados,
+    atualizarEstados,
+    removerEstados
+}

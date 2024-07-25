@@ -1,66 +1,81 @@
-const prompt = require("prompt-sync")();
+const prompt = require("prompt-sync");
 
-const atividades = [];
+const paises = [];
+
+const lerIndice = () => {
+  listarPaises();
+
+  if (paises.length > 0) {
+    const indice =
+      prompt("Digite o indice do pais que você deseja atualizar: ") - 1;
+
+    if (indice >= 0 && indice < paises.length) {
+      return indice;
+    } else {
+      console.log("Indice inválido");
+    }
+  }
+};
+
+const validarPais = (pais) => pais.nome != "" && pais.sigla.length == 2;
 
 const modelo = () => {
-  let atividade = {
-    dia: undefined,
-    descricao: [],
-  };
+  const nome = prompt("Digite o nome do país: ");
+  const sigla = prompt("Digite a sigla do país: ").toUpperCase();
 
-  atividade.dia = prompt("Qual dia? ");
-
-  while (true) {
-    let resposta = prompt("O que fez nesse dia? ");
-
-    if (resposta == "acabou") break;
-
-    atividade.descricao.push(resposta);
+  if (validarPais({ nome, sigla })) {
+    return { nome, sigla };
   }
 
-  return atividade;
+  console.log("Dados inválidos");
 };
 
-const criar = () => {
-  let atividade = modelo();
+const criarPais = () => {
+  const pais = modelo();
 
-  atividades.push(atividade);
+  if (pais != undefined) {
+    paises.push({ nome, sigla });
 
-  console.log("Atividade criada");
+    console.log("Pais criado com sucesso");
+  }
 };
 
-const listar = () => {
-  atividades.forEach((atividade, indice) => {
-    console.log(`${indice + 1}. ${atividade.dia}: `);
-    atividade.descricao.forEach(descricao => console.log(`- ${descricao}`));
-  });
+const listarPaises = () => {
+  if (paises.length == 0) {
+    console.log("Nenhum pais está cadastrado");
+  } else {
+    paises.forEach((pais, indice) => {
+      console.log(indice + 1, pais);
+    });
+  }
 };
 
-const atualizar = () => {
-  listar();
+const atualizarPais = () => {
+  const indice = lerIndice();
 
-  let indice = prompt("Qual indice deseja atualizar? ");
+  if (indice != undefined) {
+    const pais = modelo();
 
-  let atividade = modelo();
+    if (pais != undefined) {
+      paises[indice] = pais;
 
-  atividades[--indice] = atividade;
-
-  console.log("Atualizado");
+      console.log("Pais atualizado com sucesso");
+    }
+  }
 };
 
-const remover = () => {
-  listar();
+const removerPais = () => {
+  const indice = lerIndice();
+  if (indice != undefined) {
+    paises.splice(indice, 1);
 
-  let indice = prompt("Qual indice sera removido? ");
-
-  atividades.splice(--indice, 1);
-
-  console.log("Removido");
+    console.log("Pais removido com sucesso");
+  }
 };
 
 module.exports = {
-  criar,
-  atualizar,
-  remover,
-  listar,
-};
+    criarPais,
+    listarPaises,
+    atualizarPais,
+    removerPais
+}
